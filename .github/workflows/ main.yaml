@@ -1,0 +1,42 @@
+name: Depoly on VPS
+
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  docker-compose:
+    runs-on: self-hosted
+    environment: docker
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Github Secrets
+        run: |
+          echo "ACCESS_TOKEN_EXP=${{ secrets.ACCESS_TOKEN_EXP }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_URL=${{ secrets.DB_URL }}" >> .env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+          echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
+          echo "MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> .env
+          echo "REFRESH_TOKEN_EXP=${{ secrets.REFRESH_TOKEN_EXP }}" >> .env
+          echo "AUTHORIZATION_HEADER=${{ secrets.AUTHORIZATION_HEADER }}" >> .env
+          echo "API_URL=${{ secrets.API_URL }}" >> .env
+          echo "RESET_PASSWORD_URL=${{ secrets.RESET_PASSWORD_URL }}" >> .env
+          echo "ISSUER=${{ secrets.ISSUER }}" >> .env
+          echo "SUCCESS_REDIRECT_URL=${{ secrets.SUCCESS_REDIRECT_URL }}" >> .env
+          echo "FAILURE_REDIRECT_URL=${{ secrets.FAILURE_REDIRECT_URL }}" >> .env
+        shell: bash
+
+      - name: Run `docker compose`
+        run: docker compose up --build -d
+
+      - name: Remove unused
+        run: |
+          docker system prune -a -f
