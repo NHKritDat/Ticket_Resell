@@ -42,7 +42,7 @@ public class User {
     @Column(nullable = false, updatable = false, length = 6)
     private UserRole role = UserRole.MEMBER;
 
-    @NotNull(message = "USER_STATUS_NOT_NULL")
+    @NotNull(message = "STATUS_NOT_NULL")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private UserStatus status = UserStatus.UNVERIFIED;
